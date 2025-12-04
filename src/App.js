@@ -10,15 +10,14 @@ const movie = {
   Rating: "7.8",
 };
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <MovieCard />
+      <TimerComponent />
     </div>
   );
 }
-
-export default App;
 
 function MovieCard() {
   return (
@@ -38,3 +37,69 @@ function MovieCard() {
     </div>
   );
 }
+
+const TimerComponent = () => {
+  const [seconds, setSeconds] = useState(0);
+
+  const [isRunning, setIsRunning] = useState(false);
+
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setSeconds((prevSeconds) => prevSeconds + 1);
+      }, 1000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning]);
+
+  const handleStart = () => {
+    if (!isRunning) {
+      setIsRunning(true);
+    }
+  };
+
+  const handlePause = () => {
+    setIsRunning(false);
+  };
+
+  const handleReset = () => {
+    setIsRunning(false);
+    setSeconds(0);
+  };
+
+  const btnStyle = {
+    cursor: "pointer",
+    border: "none",
+    height: "40px",
+    width: "100px",
+  };
+
+  return (
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h3>Timer</h3>
+      <p style={{ fontSize: "20px", fontWeight: "bold" }}>{seconds} seconds</p>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button style={btnStyle} onClick={handleStart} disabled={isRunning}>
+          Start
+        </button>
+        <button style={btnStyle} onClick={handlePause} disabled={!isRunning}>
+          Pause
+        </button>
+        <button style={btnStyle} onClick={handleReset}>
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+};
