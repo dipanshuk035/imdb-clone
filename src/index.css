@@ -11,14 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+ul {
+  list-style: none;
+  display: grid;
+  margin-top: 50px;
+}
+
 .movie-card {
-  height: 400px;
-  width: 400px;
+  cursor: pointer;
+  position: relative;
   display: flex;
-  gap: 20px;
-  justify-content: center;
+  width: 500px;
+  grid-template-columns: 4rem 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 1.4rem;
+  font-size: 1.3rem;
+  border-radius: 15px;
+  justify-items: space-around;
   align-items: center;
+  transition: all 0.3s;
+  padding-left: 20px;
 }
 img {
-  height: 200px;
+  height: 100px;
+  width: 70px;
+  margin: 0px;
 }
