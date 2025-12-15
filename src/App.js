@@ -1,5 +1,3 @@
-import logo from "./logo.svg";
-import "./App.css";
 import { useEffect, useState } from "react";
 
 // const movie = {
@@ -13,17 +11,19 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [searchedMovies, setSearchedMovies] = useState([]);
-  const [query, setQuery] = useState("avengers");
+  const [query, setQuery] = useState("");
 
   useEffect(
     function () {
       async function fetchMovies() {
         try {
           const res = await fetch(
-            `http://www.omdbapi.com/?i=tt3896198&apikey=f28062cf&s=${query}`
+            `https://www.omdbapi.com/?i=tt0944947&apikey=f28062cf&s=${query}`
           );
           const data = await res.json();
-          setSearchedMovies((data) => data);
+          if (data.Response === "False") return;
+          if (data) setSearchedMovies((searchedMovies) => data.Search);
+          console.log(data);
         } catch (err) {
           console.log(err);
         }
@@ -34,6 +34,7 @@ function App() {
   );
   return (
     <div className="App">
+      <Nav query={query} setQuery={setQuery} />
       <MovieList searchedMovies={searchedMovies} />
     </div>
   );
@@ -41,13 +42,28 @@ function App() {
 
 export default App;
 
+function Nav({ query, setQuery }) {
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+    </div>
+  );
+}
+
 function MovieList({ searchedMovies }) {
   return (
-    <ul>
-      {searchedMovies.map((movie) => (
-        <MovieCard movie={movie} key={movie.imdbID} />
-      ))}
-    </ul>
+    searchedMovies && (
+      <ul>
+        {searchedMovies.map((movie) => (
+          <MovieCard movie={movie} key={movie.imdbID} />
+        ))}
+      </ul>
+    )
   );
 }
 
@@ -55,7 +71,7 @@ function MovieCard({ movie }) {
   return (
     <li className="movie-card">
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <div>
+      <div className="movie-details">
         <h3>{movie.Title}</h3>
         <p>
           <span>🗓</span>
